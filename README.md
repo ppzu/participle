@@ -24,7 +24,7 @@ defining parsers in Go.
 
 Participle's method of defining grammars should be familiar to any Go
 programmer who has used the `encoding/json` package: struct field tags define
-what and how input is mapped to those same fields. This is not unusual for Go
+what and how input is mapped to those same fields. This is usual for Go
 encoders, but is unusual for a parser.
 
 ## Limitations
@@ -34,9 +34,8 @@ Participle parsers are recursive descent with one token of lookahead. This means
 1. Left recursion.
 2. Ambiguity.
 
-If your grammar contains either of these they must be eliminated by restructuring your grammar.
-
-Unfortunately neither of these cases are currently detected automatically by Participle. This, however, is a goal.
+Grammar with these properties MUST be reconstructed to remove them.   
+We may try to support these properties in future releases.
 
 ## Tutorial
 
@@ -44,8 +43,7 @@ A [tutorial](TUTORIAL.md) is available, walking through the creation of an .ini 
 
 ## Overview
 
-A grammar is an annotated Go structure used to both define the parser grammar,
-and be the AST output by the parser:
+A grammar is an annotated Go structure. It can be used to represent the abstract syntax tree (AST) output by parser and the parser's grammar rules.
 
 ```go
 type Grammar struct {
@@ -115,7 +113,7 @@ For slice and string fields, each instance of `@` will accumulate into the
 field (including repeated patterns). Accumulation into other types is not
 supported.
 
-A successful capture match into a boolean field will set the field to true.
+A successful capture that matches into a boolean field will set the field to true.
 
 For integer and floating point types, a successful capture will be parsed
 with `strconv.ParseInt()` and `strconv.ParseBool()` respectively.
@@ -231,4 +229,5 @@ You can run the benchmarks yourself, but here's the output on my machine:
     BenchmarkGoThriftParser-4           2000      804709 ns/op    170301 B/op     3086 allocs/op
 
 On a real life codebase of 47K lines of Thrift, Participle takes 200ms and go-
-thrift takes 630ms, which aligns quite closely with the benchmarks.
+thrift takes 630ms.  
+ According to the benchmarks, they align quite closely.
